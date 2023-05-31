@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试验证码</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+</head>
+<body>
+<div style="display:flex;">
+    <!--1. 图形验证码-->
+    <div class="card">
+        <div style="display:flex;">
+            <input type="number" id="inputData" class="form-control">
+            <img src="http://localhost:8080/captcha/get" id="captcha">
+        </div>
+        <span class="returnData"></span>
+        <button id="check" class="btn btn-outline-secondary" type="button">验证</button>
+    </div>
+</div>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script>
+    let url = "http://localhost:8080/"
+    $(function () {
+        getData()
+    });
+    //1. 图形验证码
+    $("#captcha").click(() => {
+        var date = new Date().getTime();
+        $("#captcha")[0].src = "http://localhost:8080/captcha/get?" + date;
+
+    })
+
+    $("#check").click(() => {
+        var date = new Date().getTime();
+        let value = $('#inputData').val();
+        $.get(url + "captcha/check", {"captcha": value}, function (res) {
+            $(".returnData").html(res.msg)
+            setTimeout(function(){$(".returnData").empty()}, 1000);
+            $("#captcha")[0].src = "http://localhost:8080/captcha/get?" + date;
+            console.log(res)
+        }, "json")
+
+    })
+</script>
+</body>
+<style>
+    .card {
+        width: 500px;
+        padding: 20px
+    }
+    .form-control{
+        font-size: 2rem;
+    }
+    /*验证码输入框*/
+    #inputData {
+        height: 50px;
+        width: 200px;
+        margin-right: 50px
+    }
+
+    /*提示语句*/
+    .returnData {
+        color: red;
+        height: 24px;
+        display: inline-block;
+    }
+</style>
+</html>
